@@ -95,7 +95,7 @@ begin
 
 		q_valid <= 1'b0;
 
-		if (valid && ready && q_ready)
+		if (valid && ready && q_ready && !q_jmp)
 		begin
 			q_alu_res <= alu_res;
 

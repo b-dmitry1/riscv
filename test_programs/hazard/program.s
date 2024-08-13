@@ -1,5 +1,7 @@
 # li pseudo-instruction
 
+        j       factorial
+
         li      t0, 0x123
         li      t1, 0x12345678
         li      t2, 0x12345000
@@ -34,5 +36,6 @@ factorial:
          li      t0, 2
 
 floop:   mul     a0, a0, t0
+	 sw      a0, 0x210(t2)
          addi    t0, t0, 1
          j       floop

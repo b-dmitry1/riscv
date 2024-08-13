@@ -176,7 +176,7 @@ begin
 	cycle <= 0;
 	count <= 0;
 	wait(rst);
-	$display("CYCLE  ROM               VR  FETCH             VR  DECODE            VR  EXECUTE           V  JMP HAZ COUNT  T0       T1       T2       A0");
+	$display("CYCLE  ROM               VR  FETCH             VR  DECODE            VR  EXECUTE           V  WR JMP HAZ COUNT  T0       T1       T2       A0");
 	forever
 	begin
 		cycle = cycle + 1;
@@ -185,11 +185,11 @@ begin
 		if (e_instr_valid)
 			count = count + 1;
 
-		$display("%5d  %x:%x %1d%1d  %x:%x %1d%1d  %x:%x %1d%1d  %x:%x %1d  %1d   %1d    %4d  %x %x %x %x",
+		$display("%5d  %x:%x %1d%1d  %x:%x %1d%1d  %x:%x %1d%1d  %x:%x %1d  %1d  %1d   %1d    %4d  %x %x %x %x",
 			cycle, ib_addr, ib_data, ib_valid, ib_ready,
 			f_instr_addr, f_instr, f_instr_valid, f_instr_ready,
 			d_instr_addr, d_instr, d_instr_valid, d_instr_ready,
-			e_instr_addr, e_instr, e_instr_valid, jmp, hazard, count,
+			e_instr_addr, e_instr, e_instr_valid, e_write_rd, jmp, hazard, count,
 			r5, r6, r7, r10);
 
 		if (db_valid)
@@ -197,7 +197,7 @@ begin
 			if (db_wr)
 			begin
 				$display("Write(%x, %4b, %x)", db_addr, db_lanes, db_dout);
-				if (db_dout == 32'h213d05)
+				if (db_dout == 32'h213d05 || db_dout == 32'h1c8cfc00)
 				begin
 					$display("PASS");
 					$finish;

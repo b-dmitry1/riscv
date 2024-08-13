@@ -27,6 +27,7 @@ module decode
 	input  wire        jmp,
 	input  wire        stall,
 
+	output wire [31:0] r0,
 	output wire [31:0] r5,
 	output wire [31:0] r6,
 	output wire [31:0] r7,
@@ -35,6 +36,7 @@ module decode
 
 reg  [31:0] r [0:31];
 
+assign r0 = r[0];
 assign r5 = r[5];
 assign r6 = r[6];
 assign r7 = r[7];
@@ -76,42 +78,51 @@ begin
 			q_valid <= 1'b1;
 
 			// Декодирование команды АЛУ
-			casex ({instr[30], instr[14:12], instr[6:0]})
-				11'bx_000_0010011: q_alu_op <= `ALU_ADD;
-				11'b0_000_0110011: q_alu_op <= `ALU_ADD;
-				11'bx_xxx_0000011: q_alu_op <= `ALU_ADD;
-				11'b1_000_0110011: q_alu_op <= `ALU_SUB;
-				11'bx_010_0x10011: q_alu_op <= `ALU_SLT;
-				11'bx_011_0x10011: q_alu_op <= `ALU_SLTU;
-				11'bx_100_0x10011: q_alu_op <= `ALU_XOR;
-				11'bx_110_0x10011: q_alu_op <= `ALU_OR;
-				11'bx_111_0x10011: q_alu_op <= `ALU_AND;
-				11'bx_001_0x10011: q_alu_op <= `ALU_SLL;
-				11'b0_101_0x10011: q_alu_op <= `ALU_SRL;
-				11'b1_101_0x10011: q_alu_op <= `ALU_SRA;
+			casex ({instr[30], instr[25], instr[14:12], instr[6:0]})
+				12'bxx_000_0010011: q_alu_op <= `ALU_ADD;
+				12'bxx_xxx_0000011: q_alu_op <= `ALU_ADD;
+				12'bxx_010_0010011: q_alu_op <= `ALU_SLT;
+				12'bxx_011_0010011: q_alu_op <= `ALU_SLTU;
+				12'bxx_100_0010011: q_alu_op <= `ALU_XOR;
+				12'bxx_110_0010011: q_alu_op <= `ALU_OR;
+				12'bxx_111_0010011: q_alu_op <= `ALU_AND;
+				12'bxx_001_0010011: q_alu_op <= `ALU_SLL;
+				12'b0x_101_0010011: q_alu_op <= `ALU_SRL;
+				12'b1x_101_0010011: q_alu_op <= `ALU_SRA;
 
-				11'bx_xxx_0110111: q_alu_op <= `ALU_LUI;
-				11'bx_xxx_0010111: q_alu_op <= `ALU_AUIPC;
-				11'bx_xxx_110x111: q_alu_op <= `ALU_JAL;
+				12'b00_000_0110011: q_alu_op <= `ALU_ADD;
+				12'b10_000_0110011: q_alu_op <= `ALU_SUB;
+				12'bx0_010_0110011: q_alu_op <= `ALU_SLT;
+				12'bx0_011_0110011: q_alu_op <= `ALU_SLTU;
+				12'bx0_100_0110011: q_alu_op <= `ALU_XOR;
+				12'bx0_110_0110011: q_alu_op <= `ALU_OR;
+				12'bx0_111_0110011: q_alu_op <= `ALU_AND;
+				12'bx0_001_0110011: q_alu_op <= `ALU_SLL;
+				12'b00_101_0110011: q_alu_op <= `ALU_SRL;
+				12'b10_101_0110011: q_alu_op <= `ALU_SRA;
 
-				11'bx_000_1100011: q_alu_op <= `ALU_SEQ;
-				11'bx_001_1100011: q_alu_op <= `ALU_SNE;
-				11'bx_100_1100011: q_alu_op <= `ALU_SLT;
-				11'bx_101_1100011: q_alu_op <= `ALU_SGE;
-				11'bx_110_1100011: q_alu_op <= `ALU_SLTU;
-				11'bx_111_1100011: q_alu_op <= `ALU_SGEU;
+				12'bxx_xxx_0110111: q_alu_op <= `ALU_LUI;
+				12'bxx_xxx_0010111: q_alu_op <= `ALU_AUIPC;
+				12'bxx_xxx_110x111: q_alu_op <= `ALU_JAL;
 
-				11'b0_000_0110011: q_alu_op <= `ALU_MUL;
-				11'b0_001_0110011: q_alu_op <= `ALU_MULH;
-				11'b0_010_0110011: q_alu_op <= `ALU_MULHSU;
-				11'b0_011_0110011: q_alu_op <= `ALU_MULHU;
-				11'b0_100_0110011: q_alu_op <= `ALU_DIV;
-				11'b0_101_0110011: q_alu_op <= `ALU_DIVU;
-				11'b0_110_0110011: q_alu_op <= `ALU_REM;
-				11'b0_111_0110011: q_alu_op <= `ALU_REMU;
+				12'bxx_000_1100011: q_alu_op <= `ALU_SEQ;
+				12'bxx_001_1100011: q_alu_op <= `ALU_SNE;
+				12'bxx_100_1100011: q_alu_op <= `ALU_SLT;
+				12'bxx_101_1100011: q_alu_op <= `ALU_SGE;
+				12'bxx_110_1100011: q_alu_op <= `ALU_SLTU;
+				12'bxx_111_1100011: q_alu_op <= `ALU_SGEU;
 
-				11'bx_xxx_0100011: q_alu_op <= `ALU_SADDR;
-				default:           q_alu_op <= `ALU_ADD;
+				12'b01_000_0110011: q_alu_op <= `ALU_MUL;
+				12'b01_001_0110011: q_alu_op <= `ALU_MULH;
+				12'b01_010_0110011: q_alu_op <= `ALU_MULHSU;
+				12'b01_011_0110011: q_alu_op <= `ALU_MULHU;
+				12'b01_100_0110011: q_alu_op <= `ALU_DIV;
+				12'b01_101_0110011: q_alu_op <= `ALU_DIVU;
+				12'b01_110_0110011: q_alu_op <= `ALU_REM;
+				12'b01_111_0110011: q_alu_op <= `ALU_REMU;
+
+				12'bxx_xxx_0100011: q_alu_op <= `ALU_SADDR;
+				default:            q_alu_op <= `ALU_ADD;
 			endcase
 
 			q_jmp_addr <= instr_addr + {{12{instr[31]}}, instr[19:12], instr[20], instr[30:21], 1'b0};
