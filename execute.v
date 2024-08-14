@@ -7,6 +7,7 @@ module execute
 
 	input  wire [31:0] instr,
 	input  wire [31:0] instr_addr,
+	input  wire [31:0] next_instr_addr,
 	input  wire [31:0] r1,
 	input  wire [31:0] r2,
 	input  wire [31:0] r2s,
@@ -101,7 +102,7 @@ begin
 
 			q_write_rd <= instr[11:7] != 5'd0 && instr[6:0] != 7'h63 && instr[6:0] != 7'h23 && instr[6:0] != 7'h0F;
 
-			q_jmp <= instr[6:0] == 7'h6F;
+			q_jmp <= (instr[6:0] == 7'h6F) && (jmp_addr != next_instr_addr);
 			q_jmp_addr <= jmp_addr;
 
 			q_instr <= instr;

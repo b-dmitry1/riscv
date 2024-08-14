@@ -38,6 +38,15 @@ assign instr = fifo_instr[fifo_rp];
 assign instr_addr = fifo_instr_addr[fifo_rp];
 assign valid = !fifo_empty;
 
+wire [31:0] bp_next_addr;
+branch_predictor i_branch_predictor
+(
+	.instr(ib_din),
+	.instr_addr(ib_addr),
+
+	.next_addr(bp_next_addr)
+);
+
 initial
 begin
 	pc <= 32'h0;
@@ -78,7 +87,7 @@ begin
 				skip_next_instr <= 1'b0;
 				if (!skip_next_instr)
 				begin
-					pc <= pc + 3'd4;
+					pc <= bp_next_addr; // pc + 3'd4;
 					fifo_instr_addr[fifo_wp] <= ib_addr;
 					fifo_instr[fifo_wp] <= ib_din;
 					fifo_wp <= fifo_wp + 1'b1;

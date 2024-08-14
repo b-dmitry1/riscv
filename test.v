@@ -112,6 +112,7 @@ execute i_execute
 
 	.instr       (d_instr),
 	.instr_addr  (d_instr_addr),
+	.next_instr_addr (f_instr_addr),
 	.r1          (d_r1),
 	.r2          (d_r2),
 	.r2s         (d_r2s),

@@ -15,7 +15,7 @@ module rom
 	reg [31:0] mem [0:1023];
 	initial $readmemh ("test_programs/hazard/program.hex", mem);
 
-	// Выдать адрес вместо данных
+	// Немедленно выдать код инструкции
 	assign ibus_data  = mem[ibus_addr >> 2];
 
 	// ПЗУ всегда готово
