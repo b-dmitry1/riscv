@@ -70,8 +70,11 @@ begin
 
 		if (valid && (!q_valid || q_ready) && !jmp && !stall)
 		begin
+			// Передать код и адрес инструкции в следующую стадию конвейера
 			q_instr <= instr;
 			q_instr_addr <= instr_addr;
+
+			// Прочитать и зафиксировать значения регистров для декодируемой команды
 			q_r1  <= r[instr[19:15]];
 			q_r2  <= instr[5] ? r[instr[24:20]] : {{20{instr[31]}}, instr[31:20]};
 			q_r2s <= r[instr[24:20]];
@@ -126,6 +129,7 @@ begin
 				default:            q_alu_op <= `ALU_ADD;
 			endcase
 
+			// Определить адрес перехода для команд ветвления
 			q_jmp_addr <= instr[6:0] == 7'h63 ? instr_addr + b_imm : instr_addr + j_imm;
 		end
 		else if (q_ready)
