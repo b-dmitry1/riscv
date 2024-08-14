@@ -27,16 +27,17 @@ module decode
 	input  wire        jmp,
 	input  wire        stall,
 
-	output wire [31:0] r0,
 	output wire [31:0] r5,
 	output wire [31:0] r6,
 	output wire [31:0] r7,
 	output wire [31:0] r10
 );
 
+wire [31:0] j_imm = {{12{instr[31]}}, instr[19:12], instr[20], instr[30:21], 1'b0};
+wire [31:0] b_imm = {{20{instr[31]}}, instr[7], instr[30:25], instr[11:8], 1'b0};
+
 reg  [31:0] r [0:31];
 
-assign r0 = r[0];
 assign r5 = r[5];
 assign r6 = r[6];
 assign r7 = r[7];
@@ -125,7 +126,7 @@ begin
 				default:            q_alu_op <= `ALU_ADD;
 			endcase
 
-			q_jmp_addr <= instr_addr + {{12{instr[31]}}, instr[19:12], instr[20], instr[30:21], 1'b0};
+			q_jmp_addr <= instr[6:0] == 7'h63 ? instr_addr + b_imm : instr_addr + j_imm;
 		end
 		else if (q_ready)
 			q_valid <= 1'b0;

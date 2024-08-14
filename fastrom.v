@@ -13,7 +13,7 @@ module rom
 
 	// Блок памяти ПЗУ
 	reg [31:0] mem [0:1023];
-	initial $readmemh ("test_programs/hazard/program.hex", mem);
+	initial $readmemh ("test_programs/branch_predictor/program.hex", mem);
 
 	// Немедленно выдать код инструкции
 	assign ibus_data  = mem[ibus_addr >> 2];
